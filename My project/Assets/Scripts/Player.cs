@@ -4,23 +4,58 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public float moveSpeed;
+    public InputActionReference move;
+    public GameObject botao;
+    public GameObject Teste_diag;
 
-    Rigidbody2D rb;
+    Rigidbody rb;
+    Animator animator;
     InputAction moveAction;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+
+        rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
         moveAction = InputSystem.actions.FindAction("Move");
         Debug.Log("[qfaxas]" + moveAction);
         Debug.Log("[qfaxas]" + rb);
     }
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Interactable"))
+        {
+            botao.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Interactable"))
+        {
+            botao.SetActive(false);
+        }
+    }
+
+
+
+    private void FixedUpdate()
     {
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
-        rb.velocity = new Vector2(moveValue.x * moveSpeed * Time.deltaTime, moveValue.y * moveSpeed * Time.deltaTime);
-        Debug.Log("[qfaxas]" + moveValue);
+        rb.linearVelocity = new Vector3(moveValue.x * moveSpeed*2, moveValue.y * moveSpeed, moveValue.y * moveSpeed);
+        if (moveValue != Vector2.zero)
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
+        if (InputSystem.actions.FindAction("Interact").triggered)
+        {
+            Teste_diag.SetActive(!Teste_diag.activeInHierarchy);
+        }
     }
 
 }
