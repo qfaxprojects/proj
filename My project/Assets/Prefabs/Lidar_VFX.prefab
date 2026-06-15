@@ -50,15 +50,24 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.1
+        m_Name: Size
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 2.9960787, y: 1.0342504, z: 0, w: 0}
+        m_Name: ParticleColor
+        m_Overridden: 1
     m_Uint:
-      m_Array: []
+      m_Array:
+      - m_Value: 100
+        m_Name: Resolution
+        m_Overridden: 1
     m_Int:
       m_Array: []
     m_Matrix4x4f:
@@ -71,6 +80,9 @@ VisualEffect:
       m_Array:
       - m_Value: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
         m_Name: PositionTexture
+        m_Overridden: 1
+      - m_Value: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+        m_Name: PositionsTexture
         m_Overridden: 1
     m_Bool:
       m_Array: []

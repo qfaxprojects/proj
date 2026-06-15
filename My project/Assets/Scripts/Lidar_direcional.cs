@@ -143,13 +143,10 @@ public class Lidar_direcional : MonoBehaviour
     {
         Vector3[] pos = _positionsList.ToArray();
 
-        // cache position for offset
         Vector3 vfxPos = _currentVFX.transform.position;
 
-        // cache transform position
         Vector3 transformPos = transform.position;
 
-        // cache some more stuff for faster access
         int loopLength = _texture.width * _texture.height;
         int posListLen = pos.Length;
 
@@ -164,6 +161,7 @@ public class Lidar_direcional : MonoBehaviour
             {
                 data = new Color(0,0,0);
             }
+            _positions[i] = data;
         }
 
         _texture.SetPixels(_positions);
