@@ -60,7 +60,7 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 2.9960787, y: 1.0342504, z: 0, w: 0}
+      - m_Value: {x: 0.23775946, y: 0, z: 3.031433, w: 0}
         m_Name: ParticleColor
         m_Overridden: 1
     m_Uint:

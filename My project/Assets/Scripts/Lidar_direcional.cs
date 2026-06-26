@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
@@ -21,6 +22,7 @@ public class Lidar_direcional : MonoBehaviour
     private Color[] _positions;
     private bool _createNewVFX;
     private LineRenderer _lineRenderer;
+    private float density = 0;
 
     private const string TEXTURE_NAME = "PositionsTexture";
     private const string RESOLUTION_PARAMETER_NAME = "Resolution";
@@ -40,6 +42,7 @@ public class Lidar_direcional : MonoBehaviour
 
     [SerializeField] private int resolution = 100;
     [SerializeField][Tooltip("Quanto maior, mais objs cria(e mais rapido)")] private int _pointsPerScan = 100;
+    public TextMeshProUGUI texto;
 
 
     private void OnEnable()
@@ -138,56 +141,74 @@ public class Lidar_direcional : MonoBehaviour
         
         if (_fire.IsPressed())
         {
-            for (int i = 0; i < _pointsPerScan; i++)
-            {
-                Vector3 randomPoint = Random.insideUnitSphere;
-                randomPoint.z = Math.Abs(randomPoint.z);
-
-                randomPoint += _castPoint.position + _castPoint.TransformDirection(randomPoint) * _radius;
-
-
-
-                Vector3 direction = (randomPoint - transform.position).normalized;
-
-                if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _range, _layerMask))
-                {
-                    Debug.Log(_positionsList.Count);
-                    if (_positionsList.Count < resolution * resolution)
-                    {
-                        _positionsList.Add(hit.point);
-                        _lineRenderer.enabled = true;
-
-                        //checa se é um inimigo
-                        if (hit.collider.CompareTag("Enemy"))
-                        {
-                            _enemyPositions.Add(i);
-                        }
-
-
-                        _lineRenderer.SetPositions(new[]
-                        {
-                            transform.position,
-                            hit.point
-                        });
-                    }
-                    else
-                    {
-                        _createNewVFX = true;
-                        CreateNewVFX();
-                        break;
-                    }
-                }
-            }
-
-            ApplyPositions();
+            density += Time.deltaTime * 25;
+            texto.text = $"density = {density}\npoints_scan = {_pointsPerScan}\n resolution = {resolution * resolution}";
         }
         else
         {
+            if (density > 0.001f)
+            {
+                if (density > 100) { release_points(100); }
+                else { release_points(Math.Max(1, density)); }
+                
+            }
             _lineRenderer.enabled = false;
+            density = 0;
         
         }
         
 
+    }
+
+    private void release_points(float density)
+    {
+        for (int i = 0; i < _pointsPerScan * density; i++)
+        {
+            Vector3 randomPoint = Random.insideUnitSphere;
+            //randomPoint.z = Math.Abs(randomPoint.z);
+            //if (randomPoint.x < 0.3f && randomPoint.x > -0.3f) { randomPoint.x *= 3*Random.Range(1.2f, 3); }
+            //if (randomPoint.z < 0.3f && randomPoint.z > -0.3f) { randomPoint.z *= 3*Random.Range(1.2f, 3); }
+            float temp = (float)(Math.Pow(randomPoint.magnitude, 2));
+            randomPoint = new Vector3(randomPoint.x * temp, randomPoint.y, randomPoint.z * temp);
+            randomPoint += _castPoint.position + _castPoint.TransformDirection(randomPoint) * _radius;
+
+
+
+            Vector3 direction = (randomPoint - transform.position).normalized;
+
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _range, _layerMask))
+            {
+                Debug.Log(_positionsList.Count);
+                if (_positionsList.Count < resolution * resolution)
+                {
+                    _positionsList.Add(hit.point);
+                    _lineRenderer.enabled = true;
+
+                    //checa se é um inimigo e adiciona o indice para mudar dps
+                    if (hit.collider.CompareTag("Enemy"))
+                    {
+                        _enemyPositions.Add(_positionsList.Count-1);
+                        Debug.Log("[qfaxas] Inimigo em " + i);
+                    }
+
+
+                    _lineRenderer.SetPositions(new[]
+                    {
+                            transform.position,
+                            hit.point
+                        });
+                }
+                else
+                {
+                    _createNewVFX = true;
+                    CreateNewVFX();
+                    release_points(density);
+                    break;
+                }
+            }
+        }
+        
+        ApplyPositions();
     }
 
     private void CreateNewVFX()
@@ -219,6 +240,7 @@ public class Lidar_direcional : MonoBehaviour
         _positions = new Color[resolution * resolution];
 
         _positionsList.Clear();
+        _enemyPositions.Clear();
 
         _createNewVFX = false;
     }
@@ -247,7 +269,13 @@ public class Lidar_direcional : MonoBehaviour
             {
                 data = new Color(0,0,0);
             }
+
             _positions[i] = data;
+        }
+
+        foreach (int e in _enemyPositions)
+        {
+            _positions[e].a = 0.5f;
         }
 
         _texture.SetPixels(_positions);
