@@ -7,12 +7,16 @@ public class Player3D : MonoBehaviour
     public float moveSpeed;
     public float sensi;
 
+    [SerializeField] Animator _animator;
+
     [Tooltip("Colocar o mapa de input inteiro aq")]
     public InputActionAsset Inputs;
+
 
     private InputAction m_moveAction;
     private InputAction m_lookAction;
     private InputAction m_menuAction;
+    private InputAction m_Lidar;
 
     private Rigidbody rb;
 
@@ -34,6 +38,7 @@ public class Player3D : MonoBehaviour
         m_moveAction = InputSystem.actions.FindAction("Move");
         m_lookAction = InputSystem.actions.FindAction("Look");
         m_menuAction = InputSystem.actions.FindAction("Menu");
+        m_Lidar = InputSystem.actions.FindAction("Lidar");
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -53,6 +58,12 @@ public class Player3D : MonoBehaviour
         { 
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    private void Update()
+    {
+        if (m_Lidar.IsPressed()) _animator.SetBool("isCharging", true);
+        else _animator.SetBool("isCharging", false);
     }
 
 }

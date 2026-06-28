@@ -22,6 +22,9 @@ public class Lidar_direcional : MonoBehaviour
     private Color[] _positions;
     private bool _createNewVFX;
     private LineRenderer _lineRenderer;
+    [SerializeField]
+    [Tooltip("Supostamente aumenta o número de pontos de acordo com a normal desse.\n" +
+        "Tem uma função que aumenta a densidade enquanto se segura o botao de acao.")]
     private float density = 0;
 
     private const string TEXTURE_NAME = "PositionsTexture";
