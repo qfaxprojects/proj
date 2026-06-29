@@ -6,11 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/intro.unity
+    guid: 470cb682db6e6d9419dfe8ba27cc49eb
+  - enabled: 0
+    path: Assets/Scenes/cutscene01.unity
+    guid: 82220750e81944144a808e7eea782566
+  - enabled: 0
     path: Assets/Scenes/Quarto.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/cutscene01.unity
-    guid: 82220750e81944144a808e7eea782566
+    path: Assets/Scenes/SemLuz.unity
+    guid: 99e071b286a31a54a8451588581a4682
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: b39f8cc2eb3a8c54ea2c95baa01bd0a1, type: 3}
   m_UseUCBPForAssetBundles: 0

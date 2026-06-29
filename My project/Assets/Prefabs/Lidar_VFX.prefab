@@ -65,7 +65,7 @@ VisualEffect:
         m_Overridden: 1
     m_Uint:
       m_Array:
-      - m_Value: 100
+      - m_Value: 50
         m_Name: Resolution
         m_Overridden: 1
     m_Int:

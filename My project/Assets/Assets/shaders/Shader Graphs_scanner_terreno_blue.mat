@@ -57,7 +57,7 @@ Material:
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
-    - _inter: 1.21
+    - _inter: 1.2
     m_Colors:
     - _cor: {r: 0.25, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

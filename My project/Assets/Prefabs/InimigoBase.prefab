@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2117220933069432291}
   - component: {fileID: 6764914288725624027}
   - component: {fileID: 688715035129385603}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -189,8 +189,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
   agente: {fileID: 0}
-  Patrol1: {fileID: 0}
-  Patrol2: {fileID: 0}
+  Patrulhas:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  atual: {fileID: 0}
   indo1: 1
   perseguindo: 0
   player: {fileID: 0}
@@ -203,11 +207,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 8978298679268058944}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 5
-  m_Acceleration: 2
+  m_Radius: 2
+  m_Speed: 7
+  m_Acceleration: 7
   avoidancePriority: 50
-  m_AngularSpeed: 210
+  m_AngularSpeed: 1500
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -309,7 +313,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
       propertyPath: lengthInSec
-      value: 3
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime2
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key2.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].inSlope
+      value: 3.7293956
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].outSlope
+      value: 3.7293956
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016811092258459421, guid: b55389cd267b5104ba8a374a741b261c, type: 3}
+      propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].outWeight
+      value: 0.0718232
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -16,6 +16,7 @@ public class Lidar_direcional : MonoBehaviour
     private InputAction _changeRadius;
     private List<Vector3> _positionsList = new();
     private List<int> _enemyPositions = new();
+    private List<int> _objectivesPositions = new();
     private List<VisualEffect> _vfxList = new();
     private VisualEffect _currentVFX;
     private Texture2D _texture;
@@ -42,12 +43,13 @@ public class Lidar_direcional : MonoBehaviour
     [SerializeField] private float _maxRadius = 10f;
     [SerializeField] private float _minRadius = 1f;
     
-    [SerializeField] private float _range = 10f;
+
 
     [SerializeField] private int resolution = 100;
     [SerializeField][Tooltip("Quanto maior, mais objs cria(e mais rapido)")] private int _pointsPerScan = 100;
     public TextMeshProUGUI texto;
 
+    private float charge_time = 1f;
 
     private void OnEnable()
     {
@@ -148,9 +150,9 @@ public class Lidar_direcional : MonoBehaviour
             /*
             density += Time.deltaTime * 25;*/
             texto.text = $"density = {density}\npoints_scan = {_pointsPerScan}\n resolution = {resolution * resolution}";
-
-            //release_points(1);
-            solta_novo();
+            if (charge_time > 0) charge_time -= Time.deltaTime;
+            else release_points(1);
+            //solta_novo();
         }
         else
         {
@@ -162,6 +164,7 @@ public class Lidar_direcional : MonoBehaviour
             }
             _lineRenderer.enabled = false;
             density = 0;
+            charge_time = 1;
         
         }
         
@@ -201,6 +204,13 @@ public class Lidar_direcional : MonoBehaviour
                         _enemyPositions.Add(_positionsList.Count-1);
                         Debug.Log("[qfaxas] Inimigo em " + i);
                     }
+
+                    if (hit.collider.CompareTag("Objetivo"))
+                    {
+                        _objectivesPositions.Add(_positionsList.Count - 1);
+                        Debug.Log("[qfaxas] Objetivo em em " + i);
+                    }
+
 
 
                     /*_lineRenderer.SetPositions(new[]
@@ -327,7 +337,7 @@ public class Lidar_direcional : MonoBehaviour
 
             _indiceContainer = 0;
             atual = _vfxContainer.GetComponentsInChildren<VisualEffect>()[0];
-            Texture2D textura = atual.GetTexture();
+            //Texture2D textura = atual.GetTexture();
             
             VisualEffect temp = _vfxContainer.gameObject.GetComponentInChildren<VisualEffect>();
             Debug.Log(temp.gameObject);
@@ -381,6 +391,11 @@ public class Lidar_direcional : MonoBehaviour
         foreach (int e in _enemyPositions)
         {
             _positions[e].a = 0.5f;
+        }
+
+        foreach (int o in _objectivesPositions)
+        {
+            _positions[o].a = 0.7f;
         }
 
         _texture.SetPixels(_positions);

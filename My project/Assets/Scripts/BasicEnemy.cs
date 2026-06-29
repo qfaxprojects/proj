@@ -2,12 +2,14 @@ using UnityEngine;
 using Unity.AI;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
+using System;
+using Random = UnityEngine.Random;
 
 public class BasicEnemy : MonoBehaviour
 {
     public NavMeshAgent agente;
-    public Transform Patrol1;
-    public Transform Patrol2;
+    public Transform[] Patrulhas;
+    [SerializeField] private Transform atual;
     public bool indo1 = true;
     public bool perseguindo = false;
     public Transform player;
@@ -16,6 +18,7 @@ public class BasicEnemy : MonoBehaviour
     {
         agente = GetComponent<NavMeshAgent>();
         player = GameObject.Find("player").transform;
+        atual = Patrulhas[Random.Range(0, Patrulhas.Length)];
     }
 
     // Update is called once per frame
@@ -25,15 +28,10 @@ public class BasicEnemy : MonoBehaviour
         {
             if (agente.remainingDistance <= agente.stoppingDistance && !agente.pathPending)
             {
-                indo1 = !indo1;
-                if (indo1)
-                {
-                    agente.SetDestination(Patrol1.position);
-                }
-                else
-                {
-                    agente.SetDestination(Patrol2.position);
-                }
+                
+                atual.position = agente.destination;
+                Debug.Log("[qfaxas] chegou " + atual);
+                agente.SetDestination(Patrulhas[escolhe_ponto()].position);
 
             }
             
@@ -43,11 +41,22 @@ public class BasicEnemy : MonoBehaviour
 
     }
 
+    private int escolhe_ponto()
+    {
+        Debug.Log("[]qfaxas Escolhe novo");
+        int novo = Random.Range(0,Patrulhas.Length);
+        if (atual.position == Patrulhas[novo].position)
+        {
+            return escolhe_ponto();
+        }
+        return novo;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            agente.SetDestination(other.transform.position);
+            perseguindo = true;
         }
     }
 
@@ -55,7 +64,7 @@ public class BasicEnemy : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            agente.SetDestination(other.transform.position);
+            perseguindo = false;
         }
     }
 
