@@ -34,7 +34,8 @@ public class Lidar_direcional : MonoBehaviour
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private VisualEffect _vfxPrefab;
     [SerializeField] private GameObject _vfxContainer;
-    [SerializeField] private int _maxContainer = 10;
+    [SerializeField] private int _maxContainer = 5;
+    [SerializeField] private int _indiceContainer = 0;
 
     [SerializeField] private Transform _castPoint;
     [SerializeField] private float _radius = 10f;
@@ -75,7 +76,7 @@ public class Lidar_direcional : MonoBehaviour
     private void FixedUpdate()
     {
         Scan();
-        ChangeRadius();
+        //ChangeRadius();
     }
 
     private void ChangeRadius()
@@ -144,8 +145,12 @@ public class Lidar_direcional : MonoBehaviour
         
         if (_fire.IsPressed())
         {
-            density += Time.deltaTime * 25;
+            /*
+            density += Time.deltaTime * 25;*/
             texto.text = $"density = {density}\npoints_scan = {_pointsPerScan}\n resolution = {resolution * resolution}";
+
+            //release_points(1);
+            solta_novo();
         }
         else
         {
@@ -165,27 +170,30 @@ public class Lidar_direcional : MonoBehaviour
 
     private void release_points(float density)
     {
-        for (int i = 0; i < _pointsPerScan * density; i++)
+        for (int i = 0; i < _pointsPerScan; i++)
         {
             Vector3 randomPoint = Random.insideUnitSphere;
-            //randomPoint.z = Math.Abs(randomPoint.z);
+
             //if (randomPoint.x < 0.3f && randomPoint.x > -0.3f) { randomPoint.x *= 3*Random.Range(1.2f, 3); }
             //if (randomPoint.z < 0.3f && randomPoint.z > -0.3f) { randomPoint.z *= 3*Random.Range(1.2f, 3); }
-            float temp = (float)(Math.Pow(randomPoint.magnitude, 2));
-            randomPoint = new Vector3(randomPoint.x * temp, randomPoint.y, randomPoint.z * temp);
-            randomPoint += _castPoint.position + _castPoint.TransformDirection(randomPoint) * _radius;
+
+            randomPoint.z = Math.Abs(randomPoint.z);
+
+           // float inter = Mathf.Lerp(0.5f, 7f, Random.Range(0.01f, 0.5f));
+            //Debug.Log("[qfaxas] lerp = " + inter);
+            randomPoint += _castPoint.position + _castPoint.TransformDirection(randomPoint) * _radius;// _radius;
 
 
 
             Vector3 direction = (randomPoint - transform.position).normalized;
 
-            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _range, _layerMask))
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _radius, _layerMask)) //antes do inter era _range, se der merda muda
             {
                 Debug.Log(_positionsList.Count);
                 if (_positionsList.Count < resolution * resolution)
                 {
                     _positionsList.Add(hit.point);
-                    _lineRenderer.enabled = true;
+                    //_lineRenderer.enabled = true;
 
                     //checa se é um inimigo e adiciona o indice para mudar dps
                     if (hit.collider.CompareTag("Enemy"))
@@ -195,14 +203,15 @@ public class Lidar_direcional : MonoBehaviour
                     }
 
 
-                    _lineRenderer.SetPositions(new[]
+                    /*_lineRenderer.SetPositions(new[]
                     {
                             transform.position,
                             hit.point
-                        });
+                        });*/
                 }
                 else
                 {
+                    Debug.Log("chama");
                     _createNewVFX = true;
                     CreateNewVFX();
                     release_points(density);
@@ -213,6 +222,8 @@ public class Lidar_direcional : MonoBehaviour
         
         ApplyPositions();
     }
+
+
 
     private void CreateNewVFX()
     {
@@ -227,6 +238,97 @@ public class Lidar_direcional : MonoBehaviour
 
             _vfxList.RemoveAt(0);
             _vfxList.Add(_currentVFX);
+            VisualEffect temp = _vfxContainer.gameObject.GetComponentInChildren<VisualEffect>();
+            Debug.Log(temp.gameObject);
+            Destroy(temp.gameObject);
+
+
+        }
+
+
+        _currentVFX = Instantiate(_vfxPrefab, transform.position, Quaternion.identity, _vfxContainer.transform);
+        _currentVFX.SetUInt(RESOLUTION_PARAMETER_NAME, (uint)resolution);
+
+        _texture = new Texture2D(resolution, resolution, TextureFormat.RGBAFloat, false);
+
+        _positions = new Color[resolution * resolution];
+
+        _positionsList.Clear();
+        _enemyPositions.Clear();
+
+        _createNewVFX = false;
+    }
+
+    private void solta_novo()
+    {
+        for (int i = 0; i < _pointsPerScan; i++)
+        {
+            Vector3 randomPoint = Random.insideUnitSphere;
+
+            //if (randomPoint.x < 0.3f && randomPoint.x > -0.3f) { randomPoint.x *= 3*Random.Range(1.2f, 3); }
+            //if (randomPoint.z < 0.3f && randomPoint.z > -0.3f) { randomPoint.z *= 3*Random.Range(1.2f, 3); }
+
+            randomPoint.z = Math.Abs(randomPoint.z);
+
+            // float inter = Mathf.Lerp(0.5f, 7f, Random.Range(0.01f, 0.5f));
+            //Debug.Log("[qfaxas] lerp = " + inter);
+            randomPoint += _castPoint.position + _castPoint.TransformDirection(randomPoint) * _radius;// _radius;
+
+
+
+            Vector3 direction = (randomPoint - transform.position).normalized;
+
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _radius, _layerMask)) //antes do inter era _range, se der merda muda
+            {
+                Debug.Log(_positionsList.Count);
+                if (_positionsList.Count < resolution * resolution)
+                {
+                    _positionsList.Add(hit.point);
+                    //_lineRenderer.enabled = true;
+
+                    //checa se é um inimigo e adiciona o indice para mudar dps
+                    if (hit.collider.CompareTag("Enemy"))
+                    {
+                        _enemyPositions.Add(_positionsList.Count - 1);
+                        Debug.Log("[qfaxas] Inimigo em " + i);
+                    }
+
+
+                    /*_lineRenderer.SetPositions(new[]
+                    {
+                            transform.position,
+                            hit.point
+                        });*/
+                }
+                else
+                {
+                    Debug.Log("chama");
+                    _createNewVFX = true;
+                    cria_novo();
+                    break;
+                }
+            }
+        }
+
+        ApplyPositions();
+    }
+    private void cria_novo()
+    {
+        if (!_createNewVFX) return;
+
+        VisualEffect atual;
+
+        if (_indiceContainer < _maxContainer-1)
+        {
+            atual = _vfxContainer.GetComponentsInChildren<VisualEffect>()[_indiceContainer];
+        }
+        else
+        {
+
+            _indiceContainer = 0;
+            atual = _vfxContainer.GetComponentsInChildren<VisualEffect>()[0];
+            Texture2D textura = atual.GetTexture();
+            
             VisualEffect temp = _vfxContainer.gameObject.GetComponentInChildren<VisualEffect>();
             Debug.Log(temp.gameObject);
             Destroy(temp.gameObject);
