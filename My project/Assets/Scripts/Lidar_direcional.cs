@@ -265,6 +265,7 @@ public class Lidar_direcional : MonoBehaviour
 
         _positionsList.Clear();
         _enemyPositions.Clear();
+        _objectivesPositions.Clear();
 
         _createNewVFX = false;
     }
@@ -356,6 +357,7 @@ public class Lidar_direcional : MonoBehaviour
 
         _positionsList.Clear();
         _enemyPositions.Clear();
+        _objectivesPositions.Clear();
 
         _createNewVFX = false;
     }

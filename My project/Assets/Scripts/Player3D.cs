@@ -18,6 +18,9 @@ public class Player3D : MonoBehaviour
     private InputAction m_menuAction;
     private InputAction m_Lidar;
 
+    [SerializeField] private AudioSource passo;
+    [SerializeField] private float cd_passo = 2;
+
     private Rigidbody rb;
 
 
@@ -48,6 +51,15 @@ public class Player3D : MonoBehaviour
         Vector2 moveValue = m_moveAction.ReadValue<Vector2>();
         Vector2 mouseValue = m_lookAction.ReadValue<Vector2>();
 
+        if (moveValue != new Vector2(0, 0))
+        {
+            if (cd_passo > 0) cd_passo -= Time.deltaTime;
+            else
+            {
+                cd_passo = 2;
+                passo.Play();
+            }
+        }
         rb.MovePosition(rb.position + transform.forward * moveValue.y * moveSpeed * Time.deltaTime);
         rb.MovePosition(rb.position + transform.right * moveValue.x * moveSpeed * Time.deltaTime);
 
@@ -58,6 +70,15 @@ public class Player3D : MonoBehaviour
         { 
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Debug.Log("[qfaxas] morreu.");
+        }
+
     }
 
     private void Update()
