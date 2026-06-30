@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class Player : MonoBehaviour
         if (InputSystem.actions.FindAction("Interact").triggered)
         {
             Teste_diag.SetActive(!Teste_diag.activeInHierarchy);
+            if (Teste_diag.activeInHierarchy) SceneManager.LoadScene("SemLuz");
         }
     }
 

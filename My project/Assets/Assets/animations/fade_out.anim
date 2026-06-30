@@ -488,7 +488,7 @@ AnimationClip:
   m_Events:
   - time: 2
     functionName: Muda_Cena
-    data: SemLuz
+    data: cutscene01
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

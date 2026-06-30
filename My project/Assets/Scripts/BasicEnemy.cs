@@ -13,12 +13,16 @@ public class BasicEnemy : MonoBehaviour
     public bool indo1 = true;
     public bool perseguindo = false;
     public Transform player;
+    public AudioSource grito;
+    private float cd_grito = 10;
 
     private void Awake()
     {
         agente = GetComponent<NavMeshAgent>();
         player = GameObject.Find("player").transform;
         atual = Patrulhas[Random.Range(0, Patrulhas.Length)];
+        cd_grito = 10;
+
     }
 
     // Update is called once per frame
@@ -33,6 +37,7 @@ public class BasicEnemy : MonoBehaviour
                 Debug.Log("[qfaxas] chegou " + atual);
                 agente.SetDestination(Patrulhas[escolhe_ponto()].position);
 
+
             }
             
         }
@@ -40,6 +45,17 @@ public class BasicEnemy : MonoBehaviour
 
 
     }
+
+    
+    private void Update()
+    {
+        if (cd_grito > 0)
+        {
+            cd_grito -= Time.deltaTime;
+            Debug.Log(cd_grito);
+        }
+    }
+    
 
     private int escolhe_ponto()
     {
@@ -57,6 +73,11 @@ public class BasicEnemy : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             perseguindo = true;
+            if (cd_grito <= 0.01f)
+            {
+                grito.Play();
+                cd_grito = 10;
+            }
         }
     }
 
